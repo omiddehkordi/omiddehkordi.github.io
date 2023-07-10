@@ -26,9 +26,13 @@ let header = $(`
    <li class="nav-item nav-item-hover"><a class="nav-link" href="index.html">Home</a></li>
    <li class="nav-item nav-item-hover"><a class="nav-link" href="experience.html">Experience</a></li>
    <li class="nav-item nav-item-hover"><a class="nav-link" href="projects.html">Projects</a></li>
-   <li class="nav-item nav-item-hover"><a class="nav-link" href="research.html">Research</a></li>
+   <!-- 
+   <li class="nav-item nav-item-hover"><a class="nav-link" href="research.html">Research</a></li> 
+   -->
    <li class="nav-item nav-item-hover"><a class="nav-link" href="education.html">Education</a></li>
+   <!--
    <li class="nav-item nav-item-hover"><a class="nav-link" href="https://hashnode.com/" target="_blank">Blogs</a></li>
+   -->
    <li class="nav-item">
    <input type="checkbox" id="dark_toggler" class="dark_toggler" aria-label="Toggle Light Mode" onclick="toggle_light_mode()" checked>
    </li>
@@ -136,16 +140,24 @@ let footer = $(`
         <div class="col-lg-6 col-md-12 mb-4 mb-md-0 form-comtainer">
           <div class="form-style-6">
              <div class="form-header">
-                <h6 class="display">Get in Touch</h6>
+                <h6 class="display">Contact me</h6>
               </div>
-                <form name="form1" action="https://formcarry.com/s/BywEPAJNb" method="POST" accept-charset="UTF-8" >
-                  <input id="name" type="text" name="name" placeholder="Your Name" required/>
-                  <input id="email" type="email" name="email" placeholder="Email Address" required/>                  
-                  <textarea id="textArea" name="message" placeholder="Type your Message" required></textarea>
-              
-                  <div id="main">
-                    <button id="lnch" type="button" value="Send" >Send</button>
-                    <div id="lnch_btn"><i class="fas fa-space-shuttle"></i></div>
+                <form action="https://formcarry.com/s/X5kguuagaM" method="POST" target="_blank" enctype="multipart/form-data">
+          
+                  <div class="formcarry-block">
+                    <input type="text" name="name" id="fc-generated-1-name" placeholder="Full Name" />
+                  </div>
+                  
+                  <div class="formcarry-block">
+                    <input type="email" name="email" id="fc-generated-1-email" placeholder="Email Address" />
+                  </div>
+                  
+                  <div class="formcarry-block">
+                    <textarea name="message" name="message" id="fc-generated-1-message" placeholder="Enter your message..."></textarea>
+                  </div>
+                  
+                  <div class="formcarry-block">  
+                    <button type="submit">Send</button>
                   </div>
                 </form>
               </div>
