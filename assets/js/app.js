@@ -9,6 +9,7 @@ let header = $(`
     <li><a href="experience.html">Experience</a></li>
     <li><a href="projects.html">Projects</a></li>
     <li><a href="education.html">Education</a></li>
+    <li><a href="daily_digest.html">Daily Digest</a></li>
   </ul>
 </nav>
 `);
@@ -25,8 +26,7 @@ let footer = $(`
   </form>
   <div>
     <a href="https://www.linkedin.com/in/omiddehkordi/" target="_blank">LinkedIn</a>
-    <a href="https://www.instagram.com/omiddehkordi/" target="_blank">Instagram</a>
-    <a href="https://github.com/omiddehkordi" target="_blank">GitHub</a>
+<a href="https://github.com/omiddehkordi" target="_blank">GitHub</a>
     <a href="https://www.kaggle.com/omiddehkordi" target="_blank">Kaggle</a>
   </div>
 </footer>
