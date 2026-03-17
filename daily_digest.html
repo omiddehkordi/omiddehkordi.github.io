@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Research Digest</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap');
+
+  :root {
+    --bg: #0e0f11;
+    --surface: #16181c;
+    --surface2: #1e2128;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.12);
+    --text: #e8e9eb;
+    --muted: #7a7f8a;
+    --accent: #6ee7b7;
+    --accent2: #93c5fd;
+    --accent3: #fbbf24;
+    --accent4: #f472b6;
+    --accent5: #a78bfa;
+    --red: #f87171;
+    --tag-bg: rgba(110,231,183,0.08);
+    --tag-color: #6ee7b7;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  .grain {
+    position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  }
+
+  .layout { position: relative; z-index: 1; max-width: 860px; margin: 0 auto; padding: 48px 24px 80px; }
+
+  header { margin-bottom: 48px; }
+
+  .header-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+
+  .logo-line {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 6px;
+  }
+  .logo-dot {
+    width: 8px; height: 8px; border-radius: 50%; background: var(--accent);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.8)} }
+
+  .logo-text {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  h1 {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(28px, 5vw, 42px);
+    font-weight: 400; line-height: 1.15;
+    color: var(--text);
+  }
+
+  h1 em { font-style: italic; color: var(--accent); }
+
+  .date-badge {
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    color: var(--muted); letter-spacing: 0.08em;
+    background: var(--surface); border: 1px solid var(--border);
+    padding: 6px 12px; border-radius: 20px; white-space: nowrap;
+    margin-top: 4px;
+  }
+
+  .generate-btn {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--accent); color: #0a1a12;
+    border: none; border-radius: 8px; padding: 12px 24px;
+    font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500;
+    cursor: pointer; transition: all 0.2s; white-space: nowrap;
+    margin-top: 20px;
+  }
+  .generate-btn:hover { background: #86efca; transform: translateY(-1px); }
+  .generate-btn:active { transform: translateY(0); }
+  .generate-btn:disabled { background: var(--surface2); color: var(--muted); cursor: not-allowed; transform: none; }
+
+  .btn-icon { font-size: 16px; }
+
+  .status-bar {
+    display: none; align-items: center; gap: 12px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; padding: 12px 16px; margin-top: 20px;
+    font-size: 13px; color: var(--muted);
+  }
+  .status-bar.visible { display: flex; }
+
+  .spinner {
+    width: 14px; height: 14px; border: 2px solid var(--border2);
+    border-top-color: var(--accent); border-radius: 50%;
+    animation: spin 0.8s linear infinite; flex-shrink: 0;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .progress-track {
+    flex: 1; height: 2px; background: var(--border); border-radius: 2px; overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%; background: var(--accent); border-radius: 2px;
+    transition: width 0.5s ease; width: 0%;
+  }
+
+  #content { margin-top: 8px; }
+
+  .section {
+    margin-bottom: 40px;
+    animation: fadeIn 0.5s ease forwards;
+    opacity: 0;
+  }
+  @keyframes fadeIn { to { opacity: 1; } }
+
+  .section-header {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 20px; padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-icon {
+    width: 32px; height: 32px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; flex-shrink: 0;
+  }
+
+  .section-title {
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted);
+  }
+
+  .section-label {
+    font-size: 17px; font-weight: 500; color: var(--text);
+  }
+
+  .paper-of-day {
+    background: linear-gradient(135deg, rgba(110,231,183,0.06) 0%, rgba(147,197,253,0.04) 100%);
+    border: 1px solid rgba(110,231,183,0.2);
+    border-radius: 12px; padding: 24px;
+  }
+
+  .pod-tag {
+    display: inline-block; background: rgba(110,231,183,0.12); color: var(--accent);
+    font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.1em;
+    text-transform: uppercase; padding: 3px 8px; border-radius: 4px; margin-bottom: 12px;
+  }
+
+  .pod-title {
+    font-family: 'Instrument Serif', serif; font-size: 22px;
+    font-weight: 400; line-height: 1.3; margin-bottom: 8px; color: var(--text);
+  }
+
+  .pod-authors {
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    color: var(--muted); margin-bottom: 16px;
+  }
+
+  .pod-body { font-size: 14px; line-height: 1.75; color: #b0b5bf; }
+
+  .pod-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    margin-top: 14px; color: var(--accent); text-decoration: none;
+    font-size: 13px; font-weight: 500;
+  }
+  .pod-link:hover { text-decoration: underline; }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 20px; margin-bottom: 12px;
+    transition: border-color 0.2s;
+  }
+  .card:hover { border-color: var(--border2); }
+
+  .card-meta {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 10px; flex-wrap: wrap;
+  }
+
+  .tag {
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 2px 7px; border-radius: 4px;
+  }
+  .tag-green { background: rgba(110,231,183,0.1); color: var(--accent); }
+  .tag-blue { background: rgba(147,197,253,0.1); color: var(--accent2); }
+  .tag-amber { background: rgba(251,191,36,0.1); color: var(--accent3); }
+  .tag-pink { background: rgba(244,114,182,0.1); color: var(--accent4); }
+  .tag-purple { background: rgba(167,139,250,0.1); color: var(--accent5); }
+  .tag-red { background: rgba(248,113,113,0.1); color: var(--red); }
+
+  .card-source {
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    color: var(--muted); letter-spacing: 0.05em;
+  }
+
+  .card-title {
+    font-size: 15px; font-weight: 500; color: var(--text);
+    margin-bottom: 8px; line-height: 1.4;
+  }
+
+  .card-body { font-size: 13px; line-height: 1.75; color: #9098a6; }
+
+  .card-link {
+    display: inline-flex; align-items: center; gap: 4px;
+    margin-top: 10px; color: var(--muted); text-decoration: none;
+    font-size: 12px; transition: color 0.2s;
+  }
+  .card-link:hover { color: var(--text); }
+
+  .short-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 16px 20px; margin-bottom: 10px;
+  }
+
+  .short-card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+
+  .short-card-title { font-size: 14px; font-weight: 500; color: var(--text); }
+
+  .short-card-body { font-size: 13px; line-height: 1.65; color: #9098a6; }
+
+  .tech-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px;
+  }
+
+  .tech-item {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; padding: 14px 16px;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+
+  .tech-name { font-size: 14px; font-weight: 500; color: var(--text); }
+  .tech-cat { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; }
+  .tech-desc { font-size: 12px; color: #9098a6; line-height: 1.5; margin-top: 4px; }
+
+  .conf-item {
+    display: flex; align-items: flex-start; gap: 16px;
+    padding: 14px 0; border-bottom: 1px solid var(--border);
+  }
+  .conf-item:last-child { border-bottom: none; }
+
+  .conf-date {
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    color: var(--accent3); white-space: nowrap; min-width: 80px; margin-top: 2px;
+  }
+
+  .conf-name { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 3px; }
+  .conf-detail { font-size: 12px; color: var(--muted); }
+
+  .industry-item {
+    display: flex; gap: 14px; padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .industry-item:last-child { border-bottom: none; }
+
+  .industry-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent4); margin-top: 8px; flex-shrink: 0; }
+  .industry-text { font-size: 13px; color: #9098a6; line-height: 1.65; }
+  .industry-text strong { color: var(--text); font-weight: 500; }
+
+  .empty-state {
+    text-align: center; padding: 80px 20px;
+    color: var(--muted); font-size: 14px;
+  }
+
+  .empty-icon { font-size: 40px; margin-bottom: 16px; opacity: 0.4; }
+
+  .empty-title { font-size: 18px; font-weight: 500; color: var(--text); margin-bottom: 8px; }
+
+  .divider { height: 1px; background: var(--border); margin: 32px 0; }
+
+  a { color: inherit; }
+</style>
+</head>
+<body>
+<div class="grain"></div>
+<div class="layout">
+  <header>
+    <div class="header-top">
+      <div>
+        <div class="logo-line">
+          <div class="logo-dot"></div>
+          <span class="logo-text">Research Digest</span>
+        </div>
+        <h1>Your daily <em>intelligence</em><br>briefing</h1>
+      </div>
+      <div class="date-badge" id="dateBadge"></div>
+    </div>
+    <button class="generate-btn" id="generateBtn" onclick="generateReport()">
+      <span class="btn-icon">⚡</span>
+      Generate today's report
+    </button>
+    <div class="status-bar" id="statusBar">
+      <div class="spinner"></div>
+      <span id="statusText">Initializing...</span>
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
+  </header>
+
+  <div id="content">
+    <div class="empty-state">
+      <div class="empty-icon">◎</div>
+      <div class="empty-title">No report yet</div>
+      <p>Hit "Generate today's report" to pull the latest<br>research, news, and industry moves.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+const today = new Date();
+document.getElementById('dateBadge').textContent = today.toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+
+const SECTIONS = [
+  { id: 'pod', label: 'Paper of the day', icon: '★', color: '#6ee7b7' },
+  { id: 'ml', label: 'ML & AI research', icon: '◈', color: '#93c5fd' },
+  { id: 'sys', label: 'ML systems & infrastructure', icon: '⬡', color: '#a78bfa' },
+  { id: 'data', label: 'Data engineering & infrastructure', icon: '⊛', color: '#fbbf24' },
+  { id: 'safety', label: 'AI safety & alignment', icon: '◉', color: '#f472b6' },
+  { id: 'agents', label: 'AI agents & LLM applications', icon: '◎', color: '#6ee7b7' },
+  { id: 'arch', label: 'Computer architecture', icon: '▣', color: '#93c5fd' },
+  { id: 'dist', label: 'Distributed systems', icon: '⊕', color: '#a78bfa' },
+  { id: 'robotics', label: 'Robotics & embodied AI', icon: '◆', color: '#fbbf24' },
+  { id: 'pl', label: 'Programming languages & compilers', icon: '⌬', color: '#f472b6' },
+  { id: 'science', label: 'AI for science & STEM', icon: '⬟', color: '#6ee7b7' },
+  { id: 'industry', label: 'Industry moves', icon: '⊞', color: '#f472b6' },
+  { id: 'conf', label: 'Upcoming conferences & deadlines', icon: '◷', color: '#fbbf24' },
+  { id: 'tech', label: 'Technologies to know & learn', icon: '◈', color: '#a78bfa' },
+];
+
+const PROMPTS = {
+  pod: `You are a senior ML researcher writing a daily digest. Today is ${today.toDateString()}.
+
+Find and describe the single most important or exciting ML/AI/CS research paper published or posted in the last 48 hours. Search for it.
+
+Return ONLY valid JSON (no markdown, no backticks):
+{
+  "title": "full paper title",
+  "authors": "Author1, Author2 et al. (Institution)",
+  "venue": "arXiv / NeurIPS / etc",
+  "why_important": "3-4 sentence deep dive on what this paper does, why it matters, and what makes it novel. Be specific and technical.",
+  "link": "https://arxiv.org or doi link if known, else empty string"
+}`,
+
+  ml: `You are a senior ML researcher. Today is ${today.toDateString()}. Search for the latest ML and AI research news from the last 24-48 hours.
+
+Return ONLY valid JSON (no markdown, no backticks):
+{
+  "items": [
+    {
+      "title": "...",
+      "source": "arXiv / DeepMind / OpenAI / etc",
+      "tag": "LLMs | Vision | Multimodal | RL | Theory | etc",
+      "summary": "3-4 sentence deep dive: what was done, key results, why it matters for the field.",
+      "link": "url if known, else empty string"
+    }
+  ]
+}
+Return 3-4 items. Only real, verifiable items.`,
+
+  sys: `You are an ML systems expert. Today is ${today.toDateString()}. Search for the latest news in ML infrastructure, training systems, model serving, hardware for AI, compilers like Triton/XLA/MLIR, and frameworks.
+
+Return ONLY valid JSON (no markdown, no backticks):
+{
+  "items": [
+    {
+      "title": "...",
+      "source": "...",
+      "tag": "Training | Serving | Hardware | Compiler | Framework | etc",
+      "summary": "3-4 sentence deep dive.",
+      "link": ""
+    }
+  ]
+}
+Return 3 items.`,
+
+  data: `You are a data engineering expert. Today is ${today.toDateString()}. Search for the latest news in data infrastructure: data lakes, lakehouses, query engines (DuckDB, Velox, Spark), streaming (Kafka, Flink), storage formats (Iceberg, Delta, Hudi), orchestration (Airflow, dbt), cloud data warehouses.
+
+Return ONLY valid JSON (no markdown, no backticks):
+{
+  "items": [
+    {
+      "title": "...",
+      "source": "...",
+      "tag": "Lakehouse | Streaming | Query Engine | Orchestration | Storage | etc",
+      "summary": "3-4 sentence deep dive.",
+      "link": ""
+    }
+  ]
+}
+Return 3 items.`,
+
+  safety: `You are an AI safety researcher. Today is ${today.toDateString()}. Search for latest news in AI safety, alignment, interpretability, RLHF, robustness, and AI governance.
+
+Return ONLY valid JSON (no markdown, no backticks):
+{
+  "items": [
+    {
+      "title": "...",
+      "source": "...",
+      "summary": "2-3 sentence summary of what happened and why it matters for safety.",
+      "link": ""
+    }
+  ]
+}
+Return 2-3 items.`,
+
+  agents: `You are an AI researcher. Today is ${today.toDateString()}. Search for latest news in AI agents, tool use, multi-agent systems, LLM application frameworks (LangChain, LlamaIndex), evals, and agentic workflows.
+
+Return ONLY valid JSON (no markdown, no backticks):
+{
+  "items": [
+    {
+      "title": "...",
+      "source": "...",
+      "summary": "2-3 sentence summary.",
+      "link": ""
+    }
+  ]
+}
+Return 2-3 items.`,
+
+  arch: `You are a computer architecture expert. Today is ${today.toDateString()}. Search for latest news in GPU/TPU/NPU trends, memory hierarchies, near-memory compute, chip announcements, and hardware for AI.
+
+Return ONLY valid JSON (no markdown, no backticks):
+{
+  "items": [
+    {
+      "title": "...",
+      "source": "...",
+      "summary": "2-3 sentence summary.",
+      "link": ""
+    }
+  ]
+}
+Return 2 items.`,
+
+  dist: `You are a distributed systems expert. Today is ${today.toDateString()}. Search for latest research or engineering news in distributed systems: consensus, fault tolerance, consistency models, RDMA, high-speed interconnects, distributed databases.
+
+Return ONLY valid JSON (no markdown, no backticks):
+{
+  "items": [
+    {
+      "title": "...",
+      "source": "...",
+      "summary": "2-3 sentence summary.",
+      "link": ""
+    }
+  ]
+}
+Return 2 items.`,
+
+  robotics: `You are a robotics researcher. Today is ${today.toDateString()}. Search for latest news in robotics, embodied AI, physical AI, robot learning, foundation models for robotics.
+
+Return ONLY valid JSON (no markdown, no backticks):
+{
+  "items": [
+    {
+      "title": "...",
+      "source": "...",
+      "summary": "2-3 sentence summary.",
+      "link": ""
+    }
+  ]
+}
+Return 2 items.`,
+
+  pl: `You are a PL researcher. Today is ${today.toDateString()}. Search for latest news in programming languages, compilers, Mojo, MLIR, Triton, formal verification, type systems, language design.
+
+Return ONLY valid JSON (no markdown, no backticks):
+{
+  "items": [
+    {
+      "title": "...",
+      "source": "...",
+      "summary": "2-3 sentence summary.",
+      "link": ""
+    }
+  ]
+}
+Return 2 items.`,
+
+  science: `You are a computational scientist. Today is ${today.toDateString()}. Search for latest news in AI applied to science: biology (AlphaFold-era), drug discovery, materials science, climate, physics, chemistry, mathematics.
+
+Return ONLY valid JSON (no markdown, no backticks):
+{
+  "items": [
+    {
+      "title": "...",
+      "source": "...",
+      "summary": "2-3 sentence summary.",
+      "link": ""
+    }
+  ]
+}
+Return 2 items.`,
+
+  industry: `You are a tech industry analyst. Today is ${today.toDateString()}. Search for the latest AI/ML industry news: major funding rounds, acquisitions, key hires, lab announcements from OpenAI, Anthropic, DeepMind, Meta AI, Google, xAI, Mistral, etc. Also major open source releases.
+
+Return ONLY valid JSON (no markdown, no backticks):
+{
+  "items": [
+    {
+      "headline": "...",
+      "detail": "1-2 sentence detail with numbers/names where relevant.",
+      "link": ""
+    }
+  ]
+}
+Return 4-5 items.`,
+
+  conf: `You are a CS academic. Today is ${today.toDateString()}. List upcoming major ML/AI/CS conference deadlines and events in the next 3 months. Include: NeurIPS, ICML, ICLR, MLSys, OSDI, SOSP, VLDB, SIGMOD, CVPR, ICCV, ACL, EMNLP, and any others relevant.
+
+Return ONLY valid JSON (no markdown, no backticks):
+{
+  "items": [
+    {
+      "name": "Conference name",
+      "date": "Date or deadline",
+      "type": "Submission deadline | Notification | Conference dates",
+      "detail": "One sentence context."
+    }
+  ]
+}
+Return 5-7 items sorted by soonest first.`,
+
+  tech: `You are a senior ML/CS engineer mentor. Today is ${today.toDateString()}. Based on the current state of the field, what are the most important technologies, frameworks, and skills for a CS professional with ML focus to know and actively learn right now? Consider what's trending in job postings, research code, and engineering blogs.
+
+Return ONLY valid JSON (no markdown, no backticks):
+{
+  "items": [
+    {
+      "name": "Technology name",
+      "category": "ML Framework | Infra | Language | Tool | etc",
+      "why": "1-2 sentence reason why this matters right now."
+    }
+  ]
+}
+Return 10-12 items.`
+};
+
+const TAG_COLORS = {
+  'LLMs': 'tag-blue', 'Vision': 'tag-purple', 'Multimodal': 'tag-pink',
+  'RL': 'tag-amber', 'Theory': 'tag-green', 'Training': 'tag-blue',
+  'Serving': 'tag-green', 'Hardware': 'tag-amber', 'Compiler': 'tag-purple',
+  'Framework': 'tag-pink', 'Lakehouse': 'tag-amber', 'Streaming': 'tag-blue',
+  'Query Engine': 'tag-green', 'Orchestration': 'tag-pink', 'Storage': 'tag-purple',
+};
+
+function tagClass(t) {
+  return TAG_COLORS[t] || 'tag-green';
+}
+
+async function callClaude(prompt) {
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1000,
+      tools: [{ type: 'web_search_20250305', name: 'web_search' }],
+      messages: [{ role: 'user', content: prompt }]
+    })
+  });
+  const data = await res.json();
+  const text = data.content.filter(b => b.type === 'text').map(b => b.text).join('');
+  const clean = text.replace(/```json|```/g, '').trim();
+  return JSON.parse(clean);
+}
+
+function renderPOD(data) {
+  return `<div class="paper-of-day">
+    <span class="pod-tag">★ Paper of the day</span>
+    <div class="pod-title">${data.title}</div>
+    <div class="pod-authors">${data.authors} &nbsp;·&nbsp; ${data.venue}</div>
+    <div class="pod-body">${data.why_important}</div>
+    ${data.link ? `<a href="${data.link}" class="pod-link" target="_blank">Read paper →</a>` : ''}
+  </div>`;
+}
+
+function renderDeepSection(sectionId, items) {
+  const s = SECTIONS.find(x => x.id === sectionId);
+  const tagColorMap = { ml: 'tag-blue', sys: 'tag-purple', data: 'tag-amber' };
+  return items.map(item => `
+    <div class="card">
+      <div class="card-meta">
+        ${item.tag ? `<span class="tag ${tagColorMap[sectionId] || 'tag-green'}">${item.tag}</span>` : ''}
+        <span class="card-source">${item.source || ''}</span>
+      </div>
+      <div class="card-title">${item.title}</div>
+      <div class="card-body">${item.summary}</div>
+      ${item.link ? `<a href="${item.link}" class="card-link" target="_blank">Source ↗</a>` : ''}
+    </div>`).join('');
+}
+
+function renderShortSection(items) {
+  return items.map(item => `
+    <div class="short-card">
+      <div class="short-card-title">${item.title}</div>
+      <div class="short-card-body">${item.summary}</div>
+      ${item.link ? `<a href="${item.link}" class="card-link" target="_blank">Source ↗</a>` : ''}
+    </div>`).join('');
+}
+
+function renderIndustry(items) {
+  return `<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:4px 20px;">` +
+    items.map(item => `
+    <div class="industry-item">
+      <div class="industry-dot"></div>
+      <div class="industry-text"><strong>${item.headline}</strong> — ${item.detail}</div>
+    </div>`).join('') + `</div>`;
+}
+
+function renderConf(items) {
+  return `<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:4px 20px;">` +
+    items.map(item => `
+    <div class="conf-item">
+      <div class="conf-date">${item.date}</div>
+      <div>
+        <div class="conf-name">${item.name} <span style="font-size:11px;color:var(--muted);font-weight:400">— ${item.type}</span></div>
+        <div class="conf-detail">${item.detail}</div>
+      </div>
+    </div>`).join('') + `</div>`;
+}
+
+function renderTech(items) {
+  return `<div class="tech-grid">` +
+    items.map(item => `
+    <div class="tech-item">
+      <div class="tech-cat">${item.category}</div>
+      <div class="tech-name">${item.name}</div>
+      <div class="tech-desc">${item.why}</div>
+    </div>`).join('') + `</div>`;
+}
+
+function sectionWrapper(sectionId, html, delay) {
+  const s = SECTIONS.find(x => x.id === sectionId);
+  return `<div class="section" style="animation-delay:${delay}ms">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(255,255,255,0.04);color:${s.color}">${s.icon}</div>
+      <div>
+        <div class="section-label">${s.label}</div>
+      </div>
+    </div>
+    ${html}
+  </div>`;
+}
+
+const STEPS = [
+  { id: 'pod', label: 'Finding paper of the day...' },
+  { id: 'ml', label: 'Scanning ML & AI research...' },
+  { id: 'sys', label: 'Checking ML systems news...' },
+  { id: 'data', label: 'Scanning data infrastructure...' },
+  { id: 'safety', label: 'Reading AI safety updates...' },
+  { id: 'agents', label: 'Checking AI agents news...' },
+  { id: 'arch', label: 'Scanning computer architecture...' },
+  { id: 'dist', label: 'Reading distributed systems...' },
+  { id: 'robotics', label: 'Checking robotics news...' },
+  { id: 'pl', label: 'Scanning PL & compilers...' },
+  { id: 'science', label: 'Reading AI for science...' },
+  { id: 'industry', label: 'Gathering industry moves...' },
+  { id: 'conf', label: 'Checking conference deadlines...' },
+  { id: 'tech', label: 'Curating technologies to learn...' },
+];
+
+async function generateReport() {
+  const btn = document.getElementById('generateBtn');
+  const statusBar = document.getElementById('statusBar');
+  const statusText = document.getElementById('statusText');
+  const progressFill = document.getElementById('progressFill');
+  const content = document.getElementById('content');
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="btn-icon">◎</span> Generating...';
+  statusBar.classList.add('visible');
+  content.innerHTML = '';
+
+  const results = {};
+  const total = STEPS.length;
+
+  for (let i = 0; i < STEPS.length; i++) {
+    const step = STEPS[i];
+    statusText.textContent = step.label;
+    progressFill.style.width = ((i / total) * 100) + '%';
+    try {
+      results[step.id] = await callClaude(PROMPTS[step.id]);
+    } catch(e) {
+      results[step.id] = null;
+    }
+  }
+
+  progressFill.style.width = '100%';
+  statusText.textContent = 'Building report...';
+
+  await new Promise(r => setTimeout(r, 400));
+  statusBar.classList.remove('visible');
+  btn.disabled = false;
+  btn.innerHTML = '<span class="btn-icon">↺</span> Refresh report';
+
+  let html = '';
+  let delay = 0;
+  const inc = 60;
+
+  if (results.pod) {
+    html += sectionWrapper('pod', renderPOD(results.pod), delay); delay += inc;
+  }
+
+  html += `<div class="divider"></div>`;
+
+  for (const id of ['ml', 'sys', 'data']) {
+    if (results[id]?.items) {
+      html += sectionWrapper(id, renderDeepSection(id, results[id].items), delay); delay += inc;
+    }
+  }
+
+  html += `<div class="divider"></div>`;
+
+  for (const id of ['safety', 'agents', 'arch', 'dist', 'robotics', 'pl', 'science']) {
+    if (results[id]?.items) {
+      html += sectionWrapper(id, renderShortSection(results[id].items), delay); delay += inc;
+    }
+  }
+
+  html += `<div class="divider"></div>`;
+
+  if (results.industry?.items) {
+    html += sectionWrapper('industry', renderIndustry(results.industry.items), delay); delay += inc;
+  }
+  if (results.conf?.items) {
+    html += sectionWrapper('conf', renderConf(results.conf.items), delay); delay += inc;
+  }
+
+  html += `<div class="divider"></div>`;
+
+  if (results.tech?.items) {
+    html += sectionWrapper('tech', renderTech(results.tech.items), delay);
+  }
+
+  content.innerHTML = html;
+}
+</script>
+</body>
+</html>
