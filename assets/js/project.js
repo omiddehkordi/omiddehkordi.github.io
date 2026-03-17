@@ -7,48 +7,34 @@ const projectcards = document.querySelector(".projectcards");
 const projects = [
   {
     title: "Cancer Classification",
-    cardImage: "assets/images/project-page/cancer.jpg",
-    description: "A quiz app built using basic react.",
-    tagimg: "https://cdn.iconscout.com/icon/free/png-512/react-1-282599.png",
     Previewlink: "",
     Githublink: "https://github.com/omiddehkordi/CancerClassification",
   },
   {
     title: "CNN Traffic Sign Recognition",
-    cardImage: "assets/images/project-page/traffic.png",
-    description: "A quiz app built using basic react.",
-    tagimg: "https://cdn.iconscout.com/icon/free/png-512/react-1-282599.png",
     Previewlink: "",
     Githublink: "https://github.com/omiddehkordi/CNNTrafficSignRecognition",
   },
   {
     title: "Income Qualification Classifier",
-    cardImage: "assets/images/project-page/income.jpg",
-    description: "A quiz app built using basic react.",
-    tagimg: "https://cdn.iconscout.com/icon/free/png-512/react-1-282599.png",
     Previewlink: "",
     Githublink: "https://github.com/omiddehkordi/IncomeQualificationClassifier",
   },
   {
     title: "NY 311 Service Requests Data Analysis",
-    cardImage: "assets/images/project-page/ny311.jpg",
-    description: "A quiz app built using basic react.",
-    tagimg: "https://cdn.iconscout.com/icon/free/png-512/react-1-282599.png",
     Previewlink: "",
     Githublink: "https://github.com/omiddehkordi/NY311Project",
   },
-  
+
 ];
 
 // function for rendering project cards data
 const showCards = () => {
   let output = "";
-  projects.forEach(({ title, cardImage, Previewlink, Githublink }) => {
-    output += `       
-        <div class="column skill-card card" style="margin: 15px"data-aos="zoom-in-up" data-aos-easing="linear" data-aos-delay="300" data-aos-duration="600" >
-          <div class="wrapper" style="background: url(${cardImage}) center / cover no-repeat;">
-            <div class="header">
-            </div>
+  projects.forEach(({ title, Previewlink, Githublink }) => {
+    output += `
+        <div class="column skill-card card" style="margin: 15px" data-aos="zoom-in-up" data-aos-easing="linear" data-aos-delay="300" data-aos-duration="600" >
+          <div class="wrapper">
             <div class="data">
               <div class="content">
               <div class="title-div">
@@ -66,27 +52,3 @@ const showCards = () => {
   projectcards.innerHTML = output;
 };
 document.addEventListener("DOMContentLoaded", showCards);
-
-function myFunction() {
-  // Declare variables
-  var input, button, i, skillcard, card, title;
-  input = document.getElementById("myInput").value;
-  input = input.toUpperCase();
-  skillcard = document.getElementsByClassName("skill-card");
-  card = document.getElementsByClassName("card");
-  title = document.getElementsByClassName("title");
-
-  // Loop through all list items, and hide those who don't match the search query
-  for (i = 0; i < button.length; i++) {
-    if (
-      button[i].innerHTML.toUpperCase().includes(input) ||
-      title[i].innerHTML.toUpperCase().includes(input)
-    ) {
-      skillcard[i].style.display = "";
-      card[i].style.display = "";
-    } else {
-      skillcard[i].style.display = "none";
-      card[i].style.display = "none";
-    }
-  }
-}
