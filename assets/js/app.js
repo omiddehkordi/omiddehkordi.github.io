@@ -26,7 +26,7 @@ let footer = $(`
   </form>
   <div>
     <a href="https://www.linkedin.com/in/omiddehkordi/" target="_blank">LinkedIn</a>
-<a href="https://github.com/omiddehkordi" target="_blank">GitHub</a>
+    <a href="https://github.com/omiddehkordi" target="_blank">GitHub</a>
     <a href="https://www.kaggle.com/omiddehkordi" target="_blank">Kaggle</a>
   </div>
 </footer>
