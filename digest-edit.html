@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Digest Editor</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        * { box-sizing: border-box; }
+
+        /* ── Gate ── */
+        #gate {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            gap: 12px;
+        }
+        #gate h3 { margin: 0 0 4px; font-size: 15px; font-weight: 500; color: #111; }
+        #gate input[type=password] {
+            width: 240px;
+            padding: 10px 14px;
+            font-size: 14px;
+            font-family: inherit;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            outline: none;
+        }
+        #gate input[type=password]:focus { border-color: #999; }
+        #gate-btn {
+            width: 240px;
+            padding: 10px;
+            font-size: 14px;
+            font-family: inherit;
+            font-weight: 500;
+            background: #111;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        #gate-btn:hover { background: #333; }
+        #gate-error { font-size: 13px; color: #c00; display: none; }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-8px); }
+            40%, 80% { transform: translateX(8px); }
+        }
+        .shake { animation: shake 0.4s ease; }
+
+        /* ── Editor ── */
+        #editor { display: none; padding: 40px 32px; max-width: 1400px; margin: 0 auto; }
+        #editor > h3 { font-size: 15px; font-weight: 500; color: #888; text-transform: uppercase; letter-spacing: 0.05em; margin: 0 0 24px; }
+
+        .editor-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+            align-items: start;
+        }
+        @media (max-width: 768px) {
+            .editor-grid { grid-template-columns: 1fr; }
+            #editor { padding: 24px 16px; }
+        }
+
+        .editor-controls { display: flex; flex-direction: column; gap: 16px; }
+
+        .field-label {
+            font-size: 12px;
+            font-weight: 500;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            display: block;
+            margin-bottom: 6px;
+        }
+        .editor-controls input[type=text] {
+            width: 100%;
+            padding: 9px 12px;
+            font-size: 14px;
+            font-family: inherit;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            outline: none;
+        }
+        .editor-controls input[type=text]:focus { border-color: #999; }
+
+        #html-input {
+            width: 100%;
+            min-height: 400px;
+            padding: 12px;
+            font-size: 12.5px;
+            font-family: 'Menlo', 'Monaco', 'Consolas', monospace;
+            line-height: 1.6;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            resize: vertical;
+            outline: none;
+        }
+        #html-input:focus { border-color: #999; }
+
+        .btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
+        .btn {
+            padding: 9px 18px;
+            font-size: 13px;
+            font-family: inherit;
+            font-weight: 500;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .btn-primary { background: #111; color: #fff; }
+        .btn-primary:hover { background: #333; }
+        .btn-secondary { background: #f0f0f0; color: #111; }
+        .btn-secondary:hover { background: #e0e0e0; }
+
+        .load-row { display: flex; gap: 10px; }
+        .load-row select {
+            flex: 1;
+            padding: 9px 10px;
+            font-size: 13px;
+            font-family: inherit;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            outline: none;
+        }
+
+        #success-msg {
+            display: none;
+            padding: 10px 14px;
+            background: #f4faf4;
+            border: 1px solid #b8ddb8;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #2a7a2a;
+        }
+
+        /* ── Preview ── */
+        .preview-pane {
+            border: 1px solid #e5e5e5;
+            border-radius: 6px;
+            overflow-y: auto;
+            max-height: 88vh;
+            min-height: 400px;
+            position: sticky;
+            top: 24px;
+        }
+        .preview-pane .main {
+            padding: 32px 28px;
+            max-width: none;
+            margin: 0;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- Password gate -->
+<div id="gate">
+    <h3>Digest Editor</h3>
+    <input type="password" id="pw-input" placeholder="Password" />
+    <button id="gate-btn">Enter</button>
+    <span id="gate-error">Incorrect password</span>
+</div>
+
+<!-- Editor -->
+<div id="editor">
+    <h3>Digest Editor</h3>
+    <div class="editor-grid">
+
+        <!-- Left: controls -->
+        <div class="editor-controls">
+            <div>
+                <span class="field-label">Date</span>
+                <input type="text" id="date-input" placeholder="Tuesday, March 17, 2026" />
+            </div>
+            <div>
+                <span class="field-label">HTML content</span>
+                <textarea id="html-input" placeholder="Paste digest HTML here..."></textarea>
+            </div>
+            <div class="btn-row">
+                <button class="btn btn-secondary" id="btn-preview">Preview</button>
+                <button class="btn btn-primary" id="btn-save">Save entry</button>
+            </div>
+            <div id="success-msg">Saved — drag digest.json into your repo root to publish</div>
+            <div>
+                <span class="field-label">Load existing entry</span>
+                <div class="load-row">
+                    <select id="load-select">
+                        <option value="">— select a date —</option>
+                    </select>
+                    <button class="btn btn-secondary" id="btn-load">Load</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: preview -->
+        <div class="preview-pane">
+            <div class="main" id="preview-content">
+                <p style="color:#bbb;font-size:14px;">Click Preview to see rendered output.</p>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+(function () {
+    var PASSWORD = 'omid2026';
+
+    // ── Gate ──────────────────────────────────────────────────────────────────
+    var gate      = document.getElementById('gate');
+    var editor    = document.getElementById('editor');
+    var pwInput   = document.getElementById('pw-input');
+    var gateBtn   = document.getElementById('gate-btn');
+    var gateError = document.getElementById('gate-error');
+
+    function tryUnlock() {
+        if (pwInput.value === PASSWORD) {
+            gate.style.display = 'none';
+            editor.style.display = 'block';
+            initEditor();
+        } else {
+            gateError.style.display = 'block';
+            pwInput.classList.remove('shake');
+            void pwInput.offsetWidth;
+            pwInput.classList.add('shake');
+            pwInput.value = '';
+        }
+    }
+
+    gateBtn.addEventListener('click', tryUnlock);
+    pwInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') tryUnlock(); });
+
+    // ── Editor ────────────────────────────────────────────────────────────────
+    var dateInput      = document.getElementById('date-input');
+    var htmlInput      = document.getElementById('html-input');
+    var btnPreview     = document.getElementById('btn-preview');
+    var btnSave        = document.getElementById('btn-save');
+    var successMsg     = document.getElementById('success-msg');
+    var loadSelect     = document.getElementById('load-select');
+    var btnLoad        = document.getElementById('btn-load');
+    var previewContent = document.getElementById('preview-content');
+
+    var cachedEntries = [];
+
+    function todayFormatted() {
+        return new Date().toLocaleDateString('en-US', {
+            weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+        });
+    }
+
+    function populateLoadSelect() {
+        loadSelect.innerHTML = '<option value="">— select a date —</option>';
+        cachedEntries.forEach(function (entry) {
+            var opt = document.createElement('option');
+            opt.value = entry.date;
+            opt.textContent = entry.date;
+            loadSelect.appendChild(opt);
+        });
+    }
+
+    async function initEditor() {
+        dateInput.value = todayFormatted();
+        try {
+            var res = await fetch('digest.json?v=' + Date.now());
+            if (res.ok) cachedEntries = await res.json();
+        } catch (e) {}
+        populateLoadSelect();
+    }
+
+    btnPreview.addEventListener('click', function () {
+        previewContent.innerHTML = htmlInput.value;
+    });
+
+    btnLoad.addEventListener('click', function () {
+        var selected = loadSelect.value;
+        if (!selected) return;
+        var entry = cachedEntries.find(function (e) { return e.date === selected; });
+        if (entry) {
+            dateInput.value = entry.date;
+            htmlInput.value = entry.content;
+            previewContent.innerHTML = entry.content;
+        }
+    });
+
+    btnSave.addEventListener('click', function () {
+        var date    = dateInput.value.trim();
+        var content = htmlInput.value.trim();
+        if (!date || !content) {
+            alert('Please enter both a date and HTML content.');
+            return;
+        }
+
+        var entries = cachedEntries.slice();
+        var idx = entries.findIndex(function (e) { return e.date === date; });
+        if (idx >= 0) {
+            entries[idx] = { date: date, content: content };
+        } else {
+            entries.unshift({ date: date, content: content });
+        }
+
+        var json = JSON.stringify(entries, null, 2);
+        var blob = new Blob([json], { type: 'application/json' });
+        var url  = URL.createObjectURL(blob);
+        var a    = document.createElement('a');
+        a.href     = url;
+        a.download = 'digest.json';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        cachedEntries = entries;
+        populateLoadSelect();
+
+        successMsg.style.display = 'block';
+        setTimeout(function () { successMsg.style.display = 'none'; }, 6000);
+    });
+})();
+</script>
+
+</body>
+</html>
