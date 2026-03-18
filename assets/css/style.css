@@ -85,6 +85,7 @@ li { margin-bottom: 4px; }
 #footer {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 48px;
   padding: 64px 48px;
   border-top: 1px solid #e5e5e5;
@@ -193,6 +194,7 @@ li { margin-bottom: 4px; }
   min-height: calc(100vh - 61px);
   display: flex;
   align-items: center;
+  justify-content: center;
   padding: 80px 48px;
 }
 
@@ -223,14 +225,13 @@ li { margin-bottom: 4px; }
 .social-icons a {
   font-size: 14px;
   color: #888888;
-  border-bottom: 1px solid transparent;
+  border-bottom: none;
   padding-bottom: 1px;
   transition: color 0.15s, border-color 0.15s;
 }
 
 .social-icons a:hover {
   color: #111111;
-  border-bottom-color: #111111;
   text-decoration: none;
 }
 
