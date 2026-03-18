@@ -7,7 +7,7 @@ const exp = [
 
     place: "Aldora",
     time: "(September 2025 – Present) · Remote",
-    desp: "<li>Working on projects to collect and analyze data in the entertainment and gaming industry.</li>",
+    desp: "<li>Currently integrating a Small Language Model (SLM) into the Aldora Web Stack, covering embedding pipeline development, model training and RAG architecture.</li><li>Working on projects to collect and analyze data in the entertainment and gaming industry.</li>",
   },
   {
     title: "Engineering Intern",

@@ -494,6 +494,178 @@ li { margin-bottom: 4px; }
   border-top: 1px solid #e5e5e5;
 }
 
+/* ─── Daily Digest ───────────────────────────────────────── */
+.digest-loading { color: #888888; font-size: 14px; }
+
+.status-bar {
+  display: none;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid #e5e5e5;
+  border-radius: 6px;
+  padding: 12px 16px;
+  margin: 24px 0 32px;
+  font-size: 13px;
+  color: #888888;
+}
+.status-bar.visible { display: flex; }
+
+.spinner {
+  width: 12px;
+  height: 12px;
+  border: 1.5px solid #e5e5e5;
+  border-top-color: #111111;
+  border-radius: 50%;
+  animation: digest-spin 0.8s linear infinite;
+  flex-shrink: 0;
+}
+@keyframes digest-spin { to { transform: rotate(360deg); } }
+
+.progress-track {
+  flex: 1;
+  height: 2px;
+  background: #e5e5e5;
+  border-radius: 2px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: #111111;
+  border-radius: 2px;
+  transition: width 0.5s ease;
+  width: 0%;
+}
+
+.digest-divider { height: 1px; background: #e5e5e5; margin: 48px 0; }
+
+.digest-section { margin-bottom: 40px; }
+
+.digest-section-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e5e5e5;
+}
+.digest-section-icon { font-size: 14px; color: #888888; }
+.digest-section-label { font-size: 15px; font-weight: 500; color: #111111; }
+
+/* Paper of the day */
+.paper-of-day {
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  padding: 24px;
+  background: #ffffff;
+}
+.pod-tag {
+  display: block;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #888888;
+  margin-bottom: 12px;
+}
+.pod-title { font-size: 1.15rem; font-weight: 500; line-height: 1.35; margin-bottom: 8px; }
+.pod-authors { font-size: 12px; color: #888888; margin-bottom: 16px; }
+.pod-body { font-size: 14px; line-height: 1.75; color: #555555; }
+.pod-link { display: inline-block; margin-top: 14px; font-size: 13px; color: #111111; }
+.pod-link:hover { text-decoration: underline; }
+
+/* Deep section cards */
+.digest-card {
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 12px;
+  background: #ffffff;
+  transition: border-color 0.15s;
+}
+.digest-card:hover { border-color: #aaaaaa; }
+.digest-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.digest-card-tag {
+  font-size: 11px;
+  letter-spacing: 0.03em;
+  padding: 1px 7px;
+  border-radius: 4px;
+  border: 1px solid #e5e5e5;
+  color: #888888;
+}
+.digest-card-source { font-size: 12px; color: #888888; }
+.digest-card-title { font-size: 15px; font-weight: 500; color: #111111; margin-bottom: 8px; line-height: 1.4; }
+.digest-card-body { font-size: 14px; line-height: 1.75; color: #555555; }
+.digest-card-link { display: inline-block; margin-top: 10px; font-size: 13px; color: #888888; }
+.digest-card-link:hover { color: #111111; text-decoration: none; }
+
+/* Short section list */
+.digest-list { border-top: 1px solid #e5e5e5; }
+
+.digest-short-card {
+  padding: 16px 0;
+  border-bottom: 1px solid #e5e5e5;
+}
+.digest-short-card-title { font-size: 14px; font-weight: 500; color: #111111; margin-bottom: 6px; }
+.digest-short-card-body { font-size: 13px; line-height: 1.7; color: #555555; }
+
+/* Industry */
+.industry-item {
+  display: flex;
+  gap: 16px;
+  padding: 16px 0;
+  border-bottom: 1px solid #e5e5e5;
+}
+.industry-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #111111;
+  margin-top: 10px;
+  flex-shrink: 0;
+}
+.industry-text { font-size: 14px; line-height: 1.7; color: #555555; }
+.industry-text strong { color: #111111; font-weight: 500; }
+
+/* Conferences */
+.conf-item {
+  display: flex;
+  gap: 24px;
+  padding: 16px 0;
+  border-bottom: 1px solid #e5e5e5;
+}
+.conf-date { font-size: 12px; color: #888888; min-width: 88px; flex-shrink: 0; padding-top: 3px; }
+.conf-name { font-size: 14px; font-weight: 500; color: #111111; margin-bottom: 3px; }
+.conf-type { font-size: 12px; color: #888888; font-weight: 400; }
+.conf-detail { font-size: 13px; color: #555555; margin-top: 2px; }
+
+/* Tech grid */
+.tech-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+.tech-item {
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  padding: 16px;
+  background: #ffffff;
+}
+.tech-cat {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #888888;
+  margin-bottom: 4px;
+}
+.tech-name { font-size: 14px; font-weight: 500; color: #111111; margin-bottom: 6px; }
+.tech-desc { font-size: 13px; color: #555555; line-height: 1.6; }
+
 /* ─── Responsive ─────────────────────────────────────────── */
 @media (max-width: 640px) {
   #navbar {

@@ -3,7 +3,7 @@
 // Header
 let header = $(`
 <nav id="navbar">
-  <a href="index.html">Dehkordi</a>
+  <a href="index.html"></a>
   <ul>
     <li><a href="index.html">Home</a></li>
     <li><a href="experience.html">Experience</a></li>
