@@ -3,25 +3,25 @@
 const experiencecards = document.querySelector(".experience-cards");
 const exp = [
   {
-    title: "Part-time Data Researcher",
+    title: "Data Researcher",
 
     place: "Aldora",
     time: "(September 2025 – Present) · Remote",
-    desp: "<li>Currently integrating a Small Language Model (SLM) into the Aldora Web Stack, covering embedding pipeline development, model training and RAG architecture.</li><li>Working on projects to collect and analyze data in the entertainment and gaming industry.</li>",
+    desp: "<li>Architected an agentic AI system for the Aldora web stack using Azure OpenAI, implementing RAG and non-RAG agents with Turbopuffer as the vector store.</li><li>Built an embedding pipeline ingesting monthly, daily, and PDF data from Snowflake into Turbopuffer for vector search.</li><li>Developed web scraping pipelines to collect entertainment and gaming industry data, applying regression models to surface actionable trends.</li>",
   },
   {
     title: "Engineering Intern",
 
     place: "DigiProces",
     time: "(May 2025 – June 2025) · Barcelona, Spain",
-    desp: "<li>Developed a dynamic data collection method that responded to technician changes in soldering system programs and collected error information from the technician, enabling the collection of labeled data to train Machine Learning models.</li><li>Led the initiation phase of developing Machine Learning models to predict fixes to soldering system errors in production.</li><li>Collaborated with cross-functional teams to ensure the successful integration of data-driven solutions, enhancing operational efficiency.</li><li>Presented a final presentation on the methods developed to a group of engineers and managers detailing the progress made and next steps.</li>",
+    desp: "<li>Developed a dynamic data collection method that responded to technician changes in soldering system programs and collected error information from the technician.</li><li>Initiated development of ML models to predict and diagnose soldering system errors in production.</li>",
   },
   {
     title: "Software and Test Engineer",
 
     place: "Acculogic Inc",
     time: "(June 2022 – April 2025) · Lake Forest, California",
-    desp: "<li>Debugged and employed test programs for PCB and battery testing in collaboration with application engineers, reducing the cost of defects for customers by up to 35% in final assembly.</li><li>Created a Python script to generate battery test programs for the FLS Flying Probe Tester, resulting in a 50% reduction in pre-test time — adopted by Lucid and Tesla.</li><li>Developed a program to analyze battery data and output statistics to ensure test validity and improve error detection by 10%.</li><li>Constructed a Python script to convert test coverage data from text to Excel format instantaneously, automating the conversion process.</li><li>Installed probe modules into the FLS tester to increase test coverage and reduce test time by up to 60%.</li><li>Utilized Jupyter Notebook for battery data visualization projects for marketing and research purposes.</li>",
+    desp: "<li>Debugged and employed test programs for Printed Circuit Board (PCB) and battery testing, reducing the cost of defects for customers by up to 35% in the final assembly and generating thousands of dollars of revenue for the company.</li><li>Built a Python script, adopted by Lucid and Tesla, to automate battery test program generation for the FLS Flying Probe Tester, cutting pre-test time by 50%.</li><li>Developed a program to analyze battery data and output statistics to ensure validity of tests and improve error detection by 10%.</li><li>Constructed a Python script to convert test coverage data from text to Excel format instantaneously, allowing for more thorough data analysis and automating the conversion process.</li><li>Utilized Jupyter Notebook for battery data visualization projects for marketing and research purposes.</li>",
   },
   {
     title: "Computer Science Intern",
