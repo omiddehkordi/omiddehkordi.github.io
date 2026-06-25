@@ -8,7 +8,6 @@ let header = $(`
     <li><a href="index.html">Home</a></li>
     <li><a href="experience.html">Experience</a></li>
     <li><a href="education.html">Education</a></li>
-    <li><a href="daily_digest.html">Daily Digest</a></li>
   </ul>
 </nav>
 `);
